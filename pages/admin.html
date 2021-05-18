@@ -1,0 +1,103 @@
+
+<div class=" card p-2 mt-4 text-center rounded text-info">
+	<h3>Admin Panel</h3>
+
+
+	<form class="login" onSubmit="return admin_login(this)">
+		<div class="msgg"> </div>
+		<input required="required" type="text" name="username" class="form-group form-control" placeholder="Username" >
+		<input required="required"  type="password" name="password" class="form-group form-control" placeholder="Password" >
+		<button class=" btn btn-block btn-info">LOGIN</button>
+	</form>
+
+	<div class="text-dark orders table-responsive">
+		<table class="text-left table table-hovered table-bordered table-striped">
+		</table>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+//delete order
+function deleteOrder(id){
+	var order = $("#order-"+id)
+	$.post("./delete-order/"+id, function(){
+		order.fadeOut()
+	})
+}
+
+function load_admin(){
+	$.get("./admin", function(v){
+	if(v == "no"){
+		alert("No order available")
+		$(".login").hide()
+		return
+	}
+				$(".login").hide()
+				$(".orders table").empty()
+
+				var tt = `
+					<tr>
+						<td>s/n</td>
+						<td>User</td>
+						<td>Mail</td>
+						<td>Address</td>
+						<td>Price</td>
+						<td>Action </td>
+					</tr>
+				`
+				var ar = []
+				v = JSON.parse(v)
+				v.forEach(function(v,i,a){
+					var td = `
+						<tr id="order-${v.id}">
+							<td>${v.id}</td>
+							<td>${v.name}</td>
+							<td>${v.mail}</td>
+							<td>${v.address}</td>
+							<td>${v.price}</td>
+							<td> <span onClick="deleteOrder(${v.id})" class="text-danger">Delete <i class="fas fa-trash-alt"> </i> </span> </td>
+						</tr>`
+						ar.push(td)
+				}) //end foreach
+
+				$(".orders table").append(tt + ar.join())
+
+
+
+	})
+}
+
+
+function admin_login(form){
+	var username = form.username.value
+	var password = form.password.value
+
+	var data = {username, password}
+
+	$.post("./admin-login", data, function(v){
+		if(v == 1){
+			sessionStorage.admin = "1"
+			load_admin()
+		}else{
+			$(".msgg").html('<div class="alert alert-danger text-center"> wrong username or password</div>')
+		}
+	}).fail(e => { alert(e.responseText); /*alert("Unable to sign you in")*/ })
+
+	return false
+}
+
+
+
+app.page("admin", function(){
+
+	return function(){
+		if(sessionStorage.admin){
+			load_admin()
+		}
+	}
+
+})
+
+</script>

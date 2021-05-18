@@ -1,0 +1,85 @@
+
+
+<div class="products container-fluid">
+	<div class="row mb-4">
+	</div>
+</div>
+
+
+<script type="text/javascript">
+
+//function to  add item to cart
+function add(form){
+	//get values from form
+	var name = form.name.value
+	var price = form.price.value
+	var quantity = form.quantity.value
+	if(quantity < 1){ alert("Minimum quantity is 1"); return false; }
+
+	//es6
+	var data = {name,price,quantity}
+
+	//send request to flightapi
+	$.post("./order",data, function(v,s){
+		form.reset()
+
+		//get number of orders if added successfully
+		if(s == "success"){
+			//call myCart() method in index.html to re-load #cart-value
+			myCart()
+		}
+		//end if
+
+	})
+	.fail((e) => alert(e.responseText))
+	//end of sending request
+
+	//prevent dom from submitting form
+	return false;
+}
+
+
+app.page("home", function(){
+
+	//call the flightphp api to get the the json
+	//loop through with es6 forEach
+
+	$.get("./list-products", function(data){
+		data.forEach((v,i,a) => {
+			var name = v.name
+			var id = v.id
+			var image = v.image
+			var price = v.price
+
+			var pr = `
+				<div class="col-12 col-md-4 mt-4">
+					<div class="card">
+						<div class="card-header text-center"> <h4>${name}</h4> </div>
+							<img class="card-image-top" alt="${name}" src="./images/${image}">
+						<div class="card-body">
+							<h4 class="card-title text-center text-info">price: ${price} KM</h4>
+							<form name="product-${id}" class="bg-muted" onSubmit='return add(this)'>
+								<input type="hidden" name="name" value="${name}">
+								<input type="hidden" name="price" value="${price}">
+								<input type="number" name="quantity" placeholder="Quantity" required class="shadow-sm form-control">
+								<button class="blue btn btn-info mt-1 btn-block"> <i class="fas fa-cart-plus mr-2"> </i> Add to cart</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			`;
+
+			$(".products .row").append(pr)
+		});
+	})
+	.fail((e) => alert(e.responseText))
+	// end of jquery call to flightapi
+
+
+	 //controller function
+	return function(){
+	}
+
+})
+
+</script>
