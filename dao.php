@@ -3,7 +3,7 @@
 require 'flight/Flight.php';
 
 $username =  "root";
-$password = "root123";
+$password = "rootroot";
 $dbname = "shopping_cart";
 
 Flight::register("db", "PDO", array("mysql:host=localhost;dbname=$dbname", $username, $password), function($db){
