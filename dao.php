@@ -2,11 +2,24 @@
 
 require 'flight/Flight.php';
 
-$username =  "root";
-$password = "rootroot";
-$dbname = "shopping_cart";
+if(getenv('HEROKU')){
+	$username =  getenv('USERNAME');
+	$password = getenv('PASSWORD');
+	$dbname = getenv('DBNAME');
 
-Flight::register("db", "PDO", array("mysql:host=localhost;dbname=$dbname", $username, $password), function($db){
+	$host="sql11.freemysqlhosting.net";
+
+}else{
+	$username =  "root";
+	$password = "rootroot";
+	$dbname = "shopping_cart";
+
+	$host="localhost";
+}
+
+
+
+Flight::register("db", "PDO", array("mysql:host=$host;dbname=$dbname", $username, $password), function($db){
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 });
 
@@ -29,7 +42,7 @@ Flight::route('GET /list-products', function(){
 
 
 // add item to cart
-Flight::route("POST /order", function(){
+Flight::route("POST /order", function() {
 
 	$db = Flight::db();
 	$request = Flight::request();
@@ -41,7 +54,7 @@ Flight::route("POST /order", function(){
 	$d = $db->prepare("INSERT INTO cart(name,price,quantity) VALUES (?,?,?)");
 	$ch = $d->execute([$name, $price, $quantity]);
 
-	if($ch){
+	if ($ch) {
 		echo "yes";
 	}
 
