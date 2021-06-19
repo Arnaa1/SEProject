@@ -1,85 +1,104 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<!--[if lte IE 8]>
-	  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-	<![endif]-->
-	<title>Shopping Cart System</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"  >
-	<meta http-equiv="content-type" content="application/xhtml+xml; charset=utf-8" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"/>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" />
-	<script type="text/javascript" src="static/jquery.js"></script>
-	<script type="text/javascript" src="static/bootstrap44.min.js"></script>
-	<script type="text/javascript" src="static/spapp.js"></script>
+  <head>
+    <!--[if lte IE 8]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+    <title>Shopping Cart System</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <meta
+      http-equiv="content-type"
+      content="application/xhtml+xml; charset=utf-8"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script type="text/javascript" src="static/jquery.js"></script>
+    <script type="text/javascript" src="static/bootstrap44.min.js"></script>
+    <script type="text/javascript" src="static/spapp.js"></script>
 
-	<style type="text/css">
+    <style type="text/css">
+      section {
+        display: none;
+      }
 
-	section {
-		display:none;
-	}
+      body.home > .container > section#home,
+      body.about > .container > section#about,
+      body.receipt > .container > section#receipt,
+      body.admin > .container > section#admin,
+      body.cart > .container > section#cart,
+      body.checkout > .container > section#checkout {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+      <a href="" style="font-family: Roman" class="navbar-brand">
+        <i class="fas fa-birthday-cake"></i> Handmade cakes by Ajla&Kenan</a
+      >
+      <button
+        data-target="#co"
+        data-toggle="collapse"
+        style="outline: none"
+        class="navbar-toggler"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-	body.home > .container > section#home,
-	body.about > .container > section#about,
-	body.receipt > .container > section#receipt,
-	body.admin > .container > section#admin,
-	body.cart > .container > section#cart,
-	body.checkout > .container > section#checkout {
-		display:block;
-	}
+      <div class="justify-content-end mr-3 collapse navbar-collapse" id="co">
+        <ul class="nav navbar-nav">
+          <a href="#home" class="nav-item nav-link">
+            <i class="fas fa-home mr-2"></i>Home</a
+          >
+          <a href="#about" class="nav-item nav-link">
+            <i class="fas fa-address-card mr-2"></i>About me</a
+          >
+          <a href="#admin" class="nav-item nav-link">
+            <i class="fas fa-user mr-2"></i> Admin</a
+          >
+          <a href="#checkout" class="nav-item nav-link">
+            <i class="fas fa-money-check-alt mr-2"></i> Checkout</a
+          >
+          <a href="#cart" class="nav-item nav-link">
+            <i class="fas fa-cart-plus mr-2"></i>
+            <span id="cart-value" class="badge badge-danger">0</span>
+          </a>
+        </ul>
+      </div>
+    </nav>
+    <!-- navbar-ends -->
 
-	</style>
-</head>
-<body>
+    <!-- content -->
+    <div class="container">
+      <section id="home" default src="pages/home.html"></section>
+      <section id="about" src="pages/about.html"></section>
+      <section id="admin" src="pages/admin.html"></section>
+      <section id="contact" src="pages/contact.html"></section>
+      <section id="checkout" src="pages/checkout.html"></section>
+      <section id="cart" src="pages/cart.html"></section>
+      <section id="receipt" src="pages/receipt.html"></section>
+    </div>
+    <!--  content ends -->
 
-	<!-- navbar -->
-	<nav class="navbar navbar-expand-md bg-dark navbar-dark">
-		<a href="" style="font-family:Roman" class="navbar-brand"> <i class="fas fa-birthday-cake"></i>  Handmade cakes by Ajla&Kenan</a>
-		<button data-target="#co" data-toggle="collapse" style="outline:none"  class="navbar-toggler"> <span class="navbar-toggler-icon"></span> </button>
+    <script type="text/javascript">
+      function myCart() {
+        $.get("./my-cart", function (v) {
+          $("#cart-value").text(v);
+        }).fail((e) => alert(e.responseText));
+      }
 
-		<div class="justify-content-end mr-3 collapse navbar-collapse" id="co" >
-			<ul class="nav navbar-nav">
-				<a href="#home" class="nav-item nav-link">  <i class="fas fa-home mr-2"></i>Home</a>
-				<a href="#about" class="nav-item nav-link">  <i class="fas fa-address-card mr-2"></i>About me</a>
-				<a href="#admin" class="nav-item nav-link"> <i class="fas fa-user mr-2"></i> Admin</a>
-				<a href="#checkout" class="nav-item nav-link"> <i class="fas fa-money-check-alt mr-2"></i> Checkout</a>
-				<a href="#cart" class="nav-item nav-link "> <i class="fas fa-cart-plus mr-2"></i>  <span id="cart-value" class="badge badge-danger">0</span>  </a>
-			</ul>
-		</div>
-	</nav>
-	<!-- navbar-ends -->
-
-
-	<!-- content -->
-	<div class="container">
-
-		<section id="home" default src="pages/home.html"></section>
-		<section id="about"  src="pages/about.html"></section>
-		<section id="admin"  src="pages/admin.html"></section>
-		<section id="contact"  src="pages/contact.html"></section>
-		<section id="checkout"  src="pages/checkout.html"></section>
-		<section id="cart"      src="pages/cart.html"></section>
-		<section id="receipt"      src="pages/receipt.html"></section>
-	</div>
-	<!--  content ends -->
-
-
-
-<script type="text/javascript">
-
-
-function myCart(){
-	$.get("./my-cart", function(v){
-		$("#cart-value").text(v)
-	}).fail((e) => alert(e.responseText))
-}
-
-//
-myCart()
-
-
-
-</script>
-
-</body>
+      //
+      myCart();
+    </script>
+  </body>
 </html>

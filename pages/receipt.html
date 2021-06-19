@@ -1,32 +1,21 @@
-
 <div class="card mt-4 p-2 text-info bg-dark text-center">
-	<h3 class="" >Your Receipt</h3>
-	<div class="" id="mss" > </div>
+  <h3 class="">Your Receipt</h3>
+  <div class="" id="mss"></div>
 </div>
 
-
 <script type="text/javascript">
-
-app.page("receipt", function(){
-
-
-	return function(){
-		$.get("./receipt", function(v){
-
-			var re = `
+  app.page("receipt", function () {
+    return function () {
+      $.get("./receipt", function (v) {
+        var re = `
 				<p> Customer Name: ${v.name}</p>
 				<p> Customer Email: ${v.mail}</p>
 				<p> Address: ${v.address}</p>
 				<p> Total goods: ${v.goods}</p>
 				<p> Total Payment: ${v.price}</p>
-			`
-			$("#mss").html(re)
-
-		}).fail(e => alert(e.responseText()))
-	}
-
-
-})
-
-
+			`;
+        $("#mss").html(re);
+      }).fail((e) => alert(e.responseText()));
+    };
+  });
 </script>
