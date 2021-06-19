@@ -1,40 +1,37 @@
+<div class="mt-4 p-2 tb card table-responsive" style="overflow-y: scroll">
+  <h3 class="text-info text-center">Products In Your Cart</h3>
 
-<div class="mt-4 p-2 tb card table-responsive " style="overflow-y:scroll"  >
-	<h3 class="text-info text-center "  >Products In Your Cart</h3>
-
-	<div class="table-responsive" id="cart-table" > </div>
+  <div class="table-responsive" id="cart-table"></div>
 </div>
 
 <script type="text/javascript">
+  function removeItem(id) {
+    var tr = $("#tr-" + id);
+    //call flightapi endpoint  /delete-item/itemId
+    $.get("./delete-item/" + id, function (v) {
+      //remove item
+      tr.fadeOut();
+      myCart();
+    }).fail((e) => alert(e.responseText()));
+  }
 
-function removeItem(id){
-	var tr = $("#tr-"+id)
-	//call flightapi endpoint  /delete-item/itemId
-	$.get("./delete-item/"+id, function(v){
-		//remove item
-		tr.fadeOut()
-		myCart()
-	}).fail(e => alert(e.responseText()))
-}
+  app.page("cart", function () {
+    var $bb = $(this).find("#cart-table");
 
-app.page("cart", function(){
+    return function () {
+      //call flightapi endpoint
+      $.get("./my-cart-items", function (data) {
+        var trArray = []; //to store rows of items
+        var total = []; //to store all the prices of goods
 
-		var $bb = $(this).find("#cart-table")
+        data.forEach(function (v, i, a) {
+          var name = v.name;
+          var id = v.id;
+          var price = v.price;
+          var qut = v.quantity;
+          total.push(qut * price);
 
-	return function(){
-		//call flightapi endpoint
-		$.get("./my-cart-items", function(data){
-			var trArray = []  //to store rows of items
-			var total = [] //to store all the prices of goods
-
-			data.forEach(function(v,i,a){
-				var name = v.name
-				var id = v.id
-				var price = v.price
-				var qut = v.quantity
-				total.push(qut*price)
-
-				var tr = `
+          var tr = `
 					<tr id="tr-${id}">
 						<td>${id}</td>
 						<td> ${name}
@@ -44,13 +41,12 @@ app.page("cart", function(){
 						<td onClick="removeItem(${id})" class="text-danger" > <i class="fas fa-trash-alt" ></i> </td>
 					</tr>`;
 
-				trArray.push(tr) //push into
-			})// end of forEach loop
+          trArray.push(tr); //push into
+        }); // end of forEach loop
 
+        $("body").remove($("table"));
 
-			$("body").remove($("table"))
-
-			var thead = `
+        var thead = `
 				<tr class="font-weight-bold">
 				<td>s/n</td>
 				<td>Product name</td>
@@ -60,27 +56,25 @@ app.page("cart", function(){
 				<td>Delete</td>
 				</tr>`;
 
-				var pay = 0;
-				total.forEach(function(v,i,a){
-					pay += parseInt(v)
-				})
+        var pay = 0;
+        total.forEach(function (v, i, a) {
+          pay += parseInt(v);
+        });
 
-			var foot = `
+        var foot = `
 					<tr>
 						<td colspan="3">Total Payment : ${pay} </td>
 						<td colspan="3">  <a href="#checkout" class="btn btn-info"> <i class="fas fa-money-check-alt mr-2"> </i> checkout </a>   </td>
-					</tr>`
+					</tr>`;
 
-			var table = $("<table class='table text-center table-bordered table-hover' >")
-			table.html(thead+trArray.join()+foot)
+        var table = $(
+          "<table class='table text-center table-bordered table-hover' >"
+        );
+        table.html(thead + trArray.join() + foot);
 
-			$("#cart-table").html(table)
-
-		}).fail((e) => alert("Your cart is empty"))
-		// end of get menthod
-
-	}
-
-})
-
+        $("#cart-table").html(table);
+      }).fail((e) => alert("Your cart is empty"));
+      // end of get menthod
+    };
+  });
 </script>

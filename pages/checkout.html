@@ -1,62 +1,70 @@
+<div id="checkout-form" class="card mt-4 p-2 text-center">
+  <h3 class="text-info">Checkout</h3>
 
-<div id="checkout-form" class="card mt-4 p-2  text-center">
-	<h3 class="text-info">Checkout</h3>
+  <h5 class="text-info" id="msg"></h5>
 
-	<h5 class="text-info"  id="msg" ></h5>
-
-	<form onSubmit="return checkOut(this)">
-		<input id="goods" class="hidd" type="hidden" name="goods"  >
-		<input id="price" class="hidd" type="hidden" name="price"  >
-		<div class="form-group">
-			<input type="text" name="name" required="required" class="form-control" placeholder="Your Name" >
-		</div>
-		<div class="form-group">
-			<input type="email" name="mail" required="required" class="form-control" placeholder="Your Email Address" >
-		</div>
-		<div class="form-group">
-			<input type="text" name="address" required="required" class="form-control" placeholder="Home Address" >
-		</div>
-		<div class="form-group">
-			<button class="blue btn btn-info btn-block"> Checkout </button>
-		</div>
-	</form>
-
-
+  <form onSubmit="return checkOut(this)">
+    <input id="goods" class="hidd" type="hidden" name="goods" />
+    <input id="price" class="hidd" type="hidden" name="price" />
+    <div class="form-group">
+      <input
+        type="text"
+        name="name"
+        required="required"
+        class="form-control"
+        placeholder="Your Name"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        type="email"
+        name="mail"
+        required="required"
+        class="form-control"
+        placeholder="Your Email Address"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        type="text"
+        name="address"
+        required="required"
+        class="form-control"
+        placeholder="Home Address"
+      />
+    </div>
+    <div class="form-group">
+      <button class="blue btn btn-info btn-block">Checkout</button>
+    </div>
+  </form>
 </div>
 
 <script type="text/javascript">
+  function checkOut(form) {
+    var name = form.name.value;
+    var mail = form.mail.value;
+    var price = form.price.value;
+    var goods = form.goods.value;
+    var address = form.address.value;
 
-function checkOut(form){
+    var data = { name, mail, address, goods, price };
+    $.post("./checkout", data, function () {
+      myCart();
+      window.app("receipt");
+    }).fail((e) => alert(e.responseText));
 
-	var name = form.name.value
-	var mail = form.mail.value
-	var price = form.price.value
-	var goods = form.goods.value
-	var address = form.address.value
+    return false;
+  }
 
-	var data = {name,mail,address, goods, price}
-	$.post("./checkout", data, function(){
-		myCart()
-		window.app("receipt")
-	}).fail(e => alert(e.responseText))
+  app.page("checkout", function () {
+    return function () {
+      $("#msg").text($("#cart-value").text() + "Item(s) in Cart");
+      $("#goods").val($("#cart-value").text());
 
-	return false
-}
-
-app.page("checkout", function(){
-
-
-
-	return function(){
-		$("#msg").text($("#cart-value").text()+"Item(s) in Cart")
-		$("#goods").val($("#cart-value").text())
-
-		//call api to get total price
-		$.get("./total-price", function(v){
-			$("#price").val(v)
-		}).fail(e => alert(e.responseText()))
-	}
-
-})
-
+      //call api to get total price
+      $.get("./total-price", function (v) {
+        $("#price").val(v);
+      }).fail((e) => alert(e.responseText()));
+    };
+  });
 </script>
