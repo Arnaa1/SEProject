@@ -2,14 +2,14 @@
 
 require 'flight/Flight.php';
 
-if(getenv('HEROKU')){
+if (getenv('HEROKU') ) {
 	$username =  getenv('USERNAME');
 	$password = getenv('PASSWORD');
 	$dbname = getenv('DBNAME');
 
 	$host="sql11.freemysqlhosting.net";
 
-}else{
+} else {
 	$username =  "root";
 	$password = "rootroot";
 	$dbname = "shopping_cart";
@@ -19,7 +19,7 @@ if(getenv('HEROKU')){
 
 
 
-Flight::register("db", "PDO", array("mysql:host=$host;dbname=$dbname", $username, $password), function($db){
+Flight::register("db", "PDO", array("mysql:host=$host;dbname=$dbname", $username, $password), function ($db) {
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 });
 
