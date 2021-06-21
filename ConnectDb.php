@@ -8,23 +8,10 @@ class ConnectDb
     private static $instance = null;
     private $conn;
 
-    if (getenv('HEROKU')) {
-    $username = getenv('USERNAME');
-    $password = getenv('PASSWORD');
-    $dbname = getenv('DBNAME');
-
-    $host = "localhost";
-    } else { 
-
-
     private $host = 'localhost';
     private $user = 'root';
     private $pass = 'rootroot';
     private $name = 'shopping_cart';
-    }
-    Flight::register("db", "PDO", array("mysql:host=$host;dbname=$dbname", $username, $password), function ($db) {
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-});
 
     // The db connection is established in the private constructor.
     private function __construct()
