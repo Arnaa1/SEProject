@@ -19,7 +19,7 @@ class ConnectDb
             $this->pass = getenv('PASSWORD');
             $this->name = getenv('DBNAME');
 
-            $this->host = "sql11.freemysqlhosting.net";
+            $this->host = getenv('DBHOST');
 
         } else {
             $this->user = "root";
