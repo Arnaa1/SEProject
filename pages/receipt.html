@@ -12,7 +12,9 @@
 				<p> Customer Email: ${v.mail}</p>
 				<p> Address: ${v.address}</p>
 				<p> Total goods: ${v.goods}</p>
+        <p> Additions: ${v.addition}</p>
 				<p> Total Payment: ${v.price}</p>
+        
 			`;
         $("#mss").html(re);
       }).fail((e) => alert(e.responseText()));

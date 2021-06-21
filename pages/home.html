@@ -1,3 +1,4 @@
+
 <div class="products container-fluid">
   <div class="row mb-4"></div>
 </div>
@@ -8,14 +9,17 @@
     //get values from form
     var name = form.name.value;
     var price = form.price.value;
+    var addition=form.addition.value;
+		
     var quantity = form.quantity.value;
+   
     if (quantity < 1) {
       alert("Minimum quantity is 1");
       return false;
     }
 
     //es6
-    var data = { name, price, quantity };
+    var data = { name, price, quantity,addition};
 
     //send request to flightapi
     $.post("./order", data, function (v, s) {
@@ -44,7 +48,7 @@
         var id = v.id;
         var image = v.image;
         var price = v.price;
-
+        var addition=v.addition;
         var pr = `
 				<div class="col-12 col-md-4 mt-4">
 					<div class="card">
@@ -56,6 +60,7 @@
 								<input type="hidden" name="name" value="${name}">
 								<input type="hidden" name="price" value="${price}">
 								<input  id="qantityOfProduct" type="number" name="quantity" placeholder="Quantity" required class="shadow-sm form-control">
+								<input type="text" placeholder="Addition" name="addition" class="form-control">
 								<button id="buttonAdd" class="blue btn btn-info mt-1 btn-block"> <i class="fas fa-cart-plus mr-2"> </i> Add to cart</button>
 							</form>
 						</div>

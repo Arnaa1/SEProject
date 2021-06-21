@@ -1,3 +1,4 @@
+
 <div class="mt-4 p-2 tb card table-responsive" style="overflow-y: scroll">
   <h3 class="text-info text-center">Products In Your Cart</h3>
 
@@ -29,6 +30,8 @@
           var id = v.id;
           var price = v.price;
           var qut = v.quantity;
+          var addition = v.addition;
+		
           total.push(qut * price);
 
           var tr = `
@@ -37,7 +40,10 @@
 						<td> ${name}
 						<td> ${price} </<td>
 						<td> ${qut} </<td>
+						
 						<td>  ${qut * price}</td>
+						<td> ${addition} </<td>
+					
 						<td onClick="removeItem(${id})" class="text-danger" > <i class="fas fa-trash-alt" ></i> </td>
 					</tr>`;
 
@@ -53,6 +59,7 @@
 				<td>Price</td>
 				<td>Quantity</td>
 				<td>Total</td>
+				<td>Addition</td>
 				<td>Delete</td>
 				</tr>`;
 

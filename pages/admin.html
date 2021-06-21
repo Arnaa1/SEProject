@@ -27,6 +27,7 @@
   </div>
 </div>
 
+
 <script type="text/javascript">
   //delete order
   function deleteOrder(id) {
@@ -46,13 +47,14 @@
       $(".login").hide();
       $(".orders table").empty();
 
-      var tt = `
+      var tt = ` 
 					<tr>
 						<td>s/n</td>
 						<td>User</td>
 						<td>Mail</td>
 						<td>Address</td>
 						<td>Price</td>
+						<td>Addition</td>
 						<td>Action </td>
 					</tr>
 				`;
@@ -66,13 +68,17 @@
 							<td>${v.mail}</td>
 							<td>${v.address}</td>
 							<td>${v.price}</td>
+							<td>${v.addition}</td>
 							<td> <span onClick="deleteOrder(${v.id})" class="text-danger">Delete <i class="fas fa-trash-alt"> </i> </span> </td>
 						</tr>`;
         ar.push(td);
       }); //end foreach
 
       $(".orders table").append(tt + ar.join());
-    });
+      
+    }
+    );
+    
   }
 
   function admin_login(form) {

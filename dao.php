@@ -7,7 +7,7 @@ if (getenv('HEROKU')) {
     $password = getenv('PASSWORD');
     $dbname = getenv('DBNAME');
 
-    $host = "sql11.freemysqlhosting.net";
+    $host = "localhost";
 
 } else {
     $username = "root";
@@ -43,9 +43,20 @@ Flight::route("POST /order", function () {
     $name = $request->data->name;
     $price = $request->data->price;
     $quantity = $request->data->quantity;
+    $addition = $request->data->addition;
+    require 'Cookie.php';
+    $creator = new CookieCreator();
+    $orderBuilder = new OrderBuilder([
+        'name' => "$name",
+        'price' => $price,
+        'quantity' => $quantity,
+        'addition' => "$addition",
 
-    $d = $db->prepare("INSERT INTO cart(name,price,quantity) VALUES (?,?,?)");
-    $ch = $d->execute([$name, $price, $quantity]);
+    ]);
+
+    $additionBuidler = $creator->buildCookie($orderBuilder);
+    $d = $db->prepare("INSERT INTO cart(name,price,quantity,addition) VALUES (?,?,?,?)");
+    $ch = $d->execute([$additionBuidler->name, $additionBuidler->price, $additionBuidler->quantity, $additionBuidler->addition]);
 
     if ($ch) {
         echo "yes";
@@ -95,7 +106,6 @@ Flight::route("GET /delete-item/@id", function ($id) {
 // checkout
 Flight::route("POST /checkout", function () {
 
-    $db = Flight::db();
     $request = Flight::request();
     //get post data
     $name = $request->data->name;
@@ -103,11 +113,14 @@ Flight::route("POST /checkout", function () {
     $add = $request->data->address;
     $goods = $request->data->goods;
     $price = $request->data->price;
+    $addition = $request->data->addition;
+    require 'ConnectDb.php';
+    $instance = ConnectDb::getInstance();
+    $conn = $instance->getConnection();
+    $d = $conn->prepare("INSERT INTO orders(name,mail,address,goods,price,addition) VALUES (?,?,?,?,?,?)");
+    $ch = $d->execute([$name, $mail, $add, $goods, $price, $addition]);;
 
-    $d = $db->prepare("INSERT INTO orders(name,mail,address,goods,price) VALUES (?,?,?,?,?)");
-    $ch = $d->execute([$name, $mail, $add, $goods, $price]);
-
-    $db->query("DELETE FROM cart ");
+    $conn->query("DELETE FROM cart ");
 
 });
 
