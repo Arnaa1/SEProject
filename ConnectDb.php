@@ -1,7 +1,5 @@
 <?php
 
-require 'flight/Flight.php';
-
 class ConnectDb
 {
     // Hold the class instance.
