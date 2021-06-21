@@ -17,7 +17,7 @@ class Order extends Cookie
 {
     public function __toString()
     {
-        return '<h1>Your Samsung Phone is Ready with the following Specs.</h1>' . '<pre>' . var_export($this, true) . '</pre>';
+        return '<h1>//.</h1>' . '<pre>' . var_export($this, true) . '</pre>';
     }
 }
 

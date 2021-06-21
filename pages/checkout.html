@@ -6,6 +6,7 @@
   <form onSubmit="return checkOut(this)">
     <input id="goods" class="hidd" type="hidden" name="goods" />
     <input id="price" class="hidd" type="hidden" name="price" />
+    <input id="addition" class="hidd" type="hidden" name="addition" />
     <div class="form-group">
       <input id="name_checkout"
         type="text"
@@ -46,8 +47,9 @@
     var price = form.price.value;
     var goods = form.goods.value;
     var address = form.address.value;
+    var addition = form.addition.value;
 
-    var data = { name, mail, address, goods, price };
+    var data = { name, mail, address, goods, price, addition };
     $.post("./checkout", data, function () {
       myCart();
       window.app("receipt");
@@ -60,6 +62,7 @@
     return function () {
       $("#msg").text($("#cart-value").text() + "Item(s) in Cart");
       $("#goods").val($("#cart-value").text());
+      console.log($("#addition"));
 
       //call api to get total price
       $.get("./total-price", function (v) {

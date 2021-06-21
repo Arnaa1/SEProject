@@ -1,30 +1,15 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 require 'flight/Flight.php';
-
-if (getenv('HEROKU')) {
-    $username = getenv('USERNAME');
-    $password = getenv('PASSWORD');
-    $dbname = getenv('DBNAME');
-
-    $host = "localhost";
-
-} else {
-    $username = "root";
-    $password = "rootroot";
-    $dbname = "shopping_cart";
-
-    $host = "localhost";
-}
-
-Flight::register("db", "PDO", array("mysql:host=$host;dbname=$dbname", $username, $password), function ($db) {
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-});
+require 'ConnectDb.php';
 
 // list all the products in the products table
 Flight::route('GET /list-products', function () {
 
-    $db = Flight::db();
+    $db = ConnectDb::getInstance()->getConnection();
     $g = $db->query("SELECT * FROM products");
 
     while ($row = $g->fetch(PDO::FETCH_ASSOC)) {
@@ -37,7 +22,8 @@ Flight::route('GET /list-products', function () {
 // add item to cart
 Flight::route("POST /order", function () {
 
-    $db = Flight::db();
+    $db = ConnectDb::getInstance()->getConnection();
+
     $request = Flight::request();
     //get post data
     $name = $request->data->name;
@@ -47,10 +33,10 @@ Flight::route("POST /order", function () {
     require 'Cookie.php';
     $creator = new CookieCreator();
     $orderBuilder = new OrderBuilder([
-        'name' => "$name",
+        'name' => $name,
         'price' => $price,
         'quantity' => $quantity,
-        'addition' => "$addition",
+        'addition' => $addition,
 
     ]);
 
@@ -66,7 +52,7 @@ Flight::route("POST /order", function () {
 
 //return number of items in user cart
 Flight::route("GET /my-cart", function () {
-    $db = Flight::db();
+    $db = ConnectDb::getInstance()->getConnection();
 
     $d = $db->query("SELECT * FROM cart");
 
@@ -86,7 +72,8 @@ Flight::route("GET /my-cart", function () {
 // list all the items in user's cart
 Flight::route('GET /my-cart-items', function () {
 
-    $db = Flight::db();
+    $db = ConnectDb::getInstance()->getConnection();
+
     $g = $db->query("SELECT * FROM cart");
 
     while ($row = $g->fetch(PDO::FETCH_ASSOC)) {
@@ -98,7 +85,8 @@ Flight::route('GET /my-cart-items', function () {
 
 //delete Item from cart
 Flight::route("GET /delete-item/@id", function ($id) {
-    $db = Flight::db();
+    $db = ConnectDb::getInstance()->getConnection();
+
     $s = $db->prepare("DELETE FROM cart where id = ?");
     $s->execute([$id]);
 });
@@ -114,19 +102,19 @@ Flight::route("POST /checkout", function () {
     $goods = $request->data->goods;
     $price = $request->data->price;
     $addition = $request->data->addition;
-    require 'ConnectDb.php';
-    $instance = ConnectDb::getInstance();
-    $conn = $instance->getConnection();
-    $d = $conn->prepare("INSERT INTO orders(name,mail,address,goods,price,addition) VALUES (?,?,?,?,?,?)");
+    $db = ConnectDb::getInstance()->getConnection();
+
+    $d = $db->prepare("INSERT INTO orders(name,mail,address,goods,price,addition) VALUES (?,?,?,?,?,?)");
     $ch = $d->execute([$name, $mail, $add, $goods, $price, $addition]);;
 
-    $conn->query("DELETE FROM cart ");
+    $db->query("DELETE FROM cart ");
 
 });
 
 //get total price
 Flight::route("GET /total-price", function () {
-    $db = Flight::db();
+    $db = ConnectDb::getInstance()->getConnection();
+
     $s = $db->query("SELECT * from cart");
     $p = 0;
     while ($d = $s->fetch(PDO::FETCH_ASSOC)) {
@@ -137,7 +125,8 @@ Flight::route("GET /total-price", function () {
 
 //checkout receipt
 Flight::route("GET /receipt", function () {
-    $db = Flight::db();
+    $db = ConnectDb::getInstance()->getConnection();
+
     $s = $db->query("SELECT *  from orders ORDER BY ID DESC LIMIT 1");
     $d = $s->fetch(PDO::FETCH_ASSOC);
     Flight::json($d);
@@ -163,7 +152,8 @@ Flight::route("POST /admin-login", function () {
 //admin
 Flight::route("GET /admin", function () {
 
-    $db = Flight::db();
+    $db = ConnectDb::getInstance()->getConnection();
+
     $q = $db->query("SELECT * FROM orders");
 
     $orders = [];
@@ -182,7 +172,8 @@ Flight::route("GET /admin", function () {
 //delete order by admin
 Flight::route("POST /delete-order/@id", function ($id) {
 
-    $db = Flight::db();
+    $db = ConnectDb::getInstance()->getConnection();
+
     $s = $db->prepare("DELETE FROM orders where id = ?");
     $s->execute([$id]);
 
